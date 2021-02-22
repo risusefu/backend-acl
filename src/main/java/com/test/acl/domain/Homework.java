@@ -38,35 +38,63 @@
  */
 package com.test.acl.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.Serializable;
-import javax.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-@ApiModel(description = "Class representing an address.")
+import javax.persistence.*;
+import javax.validation.constraints.*;
+import java.io.Serializable;
+import java.util.Date;
+
+@ApiModel(description = "Class representing a tareas in the application.")
+@Entity
+@Table(name = "tareas")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Getter
 @Setter
-public class Address implements Serializable {
+public class Homework implements Serializable {
 
-    @ApiModelProperty(notes = "Address line 1 of the contact.", 
-            example = "888 Constantine Ave, #54", required = false, position = 0)
-    @Size(max = 50)
-    private String address1;
-    
-    @ApiModelProperty(notes = "Address line 2 of the contact.", 
-            example = "San Angeles", required = false, position = 1)
-    @Size(max = 50)
-    private String address2;
-    
-    @ApiModelProperty(notes = "Address line 3 of the contact.", 
-            example = "Florida", required = false, position = 2)
-    @Size(max = 50)
-    private String address3;
-    
-    @ApiModelProperty(notes = "Postal code of the contact.", 
-            example = "32106", required = false, position = 3)
-    @Size(max = 20)
-    private String postalCode;    
+    private static final long serialVersionUID = 1L;
+
+    @ApiModelProperty(notes = "Unique identifier of the homework.",
+            example = "1", required = true, position = 0)
+    @Id
+    @SequenceGenerator(name="tareas_id_seq",
+            sequenceName="tareas_id_seq",
+            allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator="tareas_id_seq")
+    @Column(name = "id", updatable=false)
+    private Long id;
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @ApiModelProperty(notes = "Descripcion de la tarea.",
+            example = "Tarea numero 1", required = true, position = 1)
+    @NotBlank
+    @Size(max = 100)
+    @Column(name = "descripcion")
+    private String description;
+
+    @Basic(optional = false)
+    @Column(name = "fecha_creacion", updatable = false,
+            columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createAt;
+
+    @Column(name = "vigente")
+    private boolean active;
+
+    @PrePersist
+    protected void onCreate() {
+        createAt = createAt = new Date();
+    }
+
 }
