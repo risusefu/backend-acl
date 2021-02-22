@@ -1,10 +1,11 @@
-# port 8080
+# configuration
+ port 8080
 
-# mvn install
+ mvn install
 
-# swagger http://localhost:8080/swagger-ui.html#/homework
+ swagger http://localhost:8080/swagger-ui.html#/homework
 
-# run sql postgres, sql/test.sql
+ run sql postgres, sql/test.sql
 
 # spring-boot-jpa-hibernate-pgsql
 Spring Boot + JPA/Hibernate + PostgreSQL RESTful CRUD API Example with SpringFox and Swagger
